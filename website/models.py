@@ -1,5 +1,9 @@
 from django.db import models
+from django import forms
 # Create your models here.
+
+class Search(forms.Form):
+    searching = forms.CharField( max_length=100)
 
 class Siteinfo(models.Model):
     logo = models.ImageField( upload_to='logo/siteinfo')

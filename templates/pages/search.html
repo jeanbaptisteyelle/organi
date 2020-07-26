@@ -54,12 +54,12 @@
                 </ul>
             </div>
             <div class="header__top__right__auth">
-                <a href="{% url 'register' %}"><i class="fa fa-user"></i> Login</a>
+                <a href="#"><i class="fa fa-user"></i> Login</a>
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
             <ul>
-                <li><a href="{% url 'index' %}">Home</a></li>
+                <li class="active"><a href="{% url 'index' %}">Home</a></li>
                 <li><a href="{% url 'shop-grid' %}">Shop</a></li>
                 <li><a href="#">Pages</a>
                     <ul class="header__menu__dropdown">
@@ -123,7 +123,7 @@
                                 </ul>
                             </div>
                             <div class="header__top__right__auth">
-                                <a href="{% url 'login' %}"><i class="fa fa-user"></i> Login</a>
+                                <a href="#"><i class="fa fa-user"></i> Login</a>
                             </div>
                         </div>
                     </div>
@@ -169,9 +169,128 @@
         </div>
     </header>
     <!-- Header Section End -->
-   {% block content %}
-   
-   {% endblock content %}
+        <!-- Hero Section Begin -->
+        <section class="hero">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="hero__search">
+                            <div class="hero__search__form">
+                                <form action="{% url 'search' %} " method="POST">
+                                    {% csrf_token %}
+                                   
+                                    <div class="hero__search__categories">
+                                        <h3>Search</h3>
+                                         
+                                    </div>
+                                    <input type="text" placeholder="What do yo u need?" required name="searching">
+                                    <button type="submit" class="site-btn">SEARCH</button>
+                                </form>
+                            </div>
+                            <div class="hero__search__phone">
+                                <div class="hero__search__phone__icon">
+                                    <i class="fa fa-phone"></i>
+                                </div>
+                                <div class="hero__search__phone__text">
+                                    <h5>{{siteinfo.telephone}}</h5>
+                                    <span>support 24/7 time</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Hero Section End -->
+
+        <section class="categories">
+            <div class="container">
+                {% if longeur > 0 %}
+                        <div class="col-lg-12 ">
+                            <h2 style="margin-left: 26rem;" >Resutats Obtenus</h2>
+                        </div>
+                        <br>
+                            <p class="h2 font-family-sans-serif:Arial">Articles</p>  
+                        <div class="row">
+            
+                    
+                        {% for resut in articles %}
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <div class="blog__item">
+                                    <div class="blog__item__pic">
+                                        <div class="blog__item__text">
+                                            <h5><a href="#">{{resut.nom}}</a></h5>
+                                        </div>
+                                        <img src="{{resut.image.url}}" alt="">
+                                    </div>
+                                    <div class="blog__item__text">
+                                        <ul>
+                                            <li><i class="fa fa-calendar-o"></i>{{resut.date_update}}</li>
+                                            <li><i class="fa fa-comment-o"></i> 5</li>
+                                        </ul>
+                                        <p>{{resut.description}}</p>
+                                        
+                                    </div>
+                                </div>
+                            </div>  
+
+                        {% endfor %}
+                {% else %}
+                <p class="h2 font-family-sans-serif:Arial">Articles: <span class="h4 font-family-sans-serif:Arial">aucun résultat trouvé</span> </p>  
+
+                {% endif %}
+                    </div>
+
+    </div>
+</section>
+
+
+            <section class="categories">
+                <div class="container">
+                    
+                    {% if height > 0 %}
+                        <p class="h2 font-family-sans-serif:Arial text-justify">Recettes</p>  
+                    <div class="row">
+            {% for recet in recettes %}
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="blog__item">
+                        <div class="blog__item__pic">
+                            <div class="blog__item__text">
+                                <h5><a href="#">{{recet.nom}}</a></h5>
+                            </div>
+                            <img src="{{recet.image.url}}" alt="">
+                        </div>
+                        <div class="blog__item__text">
+                            <ul>
+                                <li><i class="fa fa-calendar-o"></i>{{recet.date_update}}</li>
+                                <li><i class="fa fa-comment-o"></i> 5</li>
+                            </ul>
+                            <p>{{recet.description}}</p>
+                            
+                        </div>
+                    </div>
+                </div>      
+            {% endfor %}
+
+            {% else %}
+            <p class="h2 font-family-sans-serif:Arial">Recettes: <span class="h4 font-family-sans-serif:Arial">aucun résultat trouvé</span> </p> 
+            {% endif %}
+                </div>
+             </section>
+
+
+    
+    
+        
+                    
+
+
+
+
+
     <!-- Footer Section Begin -->
     <footer class="footer spad">
         <div class="container">

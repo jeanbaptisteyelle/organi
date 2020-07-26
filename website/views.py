@@ -3,30 +3,125 @@ from . import models
 from organiapp import models as organiapp_models
 from blog import models as blog_models
 
+from django.db.models import Q
+
+from django.contrib.auth import authenticate,login,logout
 from django.core.validators import validate_email
 from django.contrib.auth.models import User
 from django.contrib import messages
 # Create your views here.
+def login(request):
+    message=""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username,password=password)
+        if user is not None and user.is_active:
+            login(request,user)
 
-def newletter(request):
-    if request.method=='POST':
+            return redirect('index')
+        else:
+            print("login échoué")
+            message = "Merci de vérifiez vos informations"
+    datas = {
+
+    }
+    return render(request, 'pages/login.html', datas)
+
+
+def register(request):
+    success = False
+    message = ""
+    if request.method == 'POST':
+        username = request.POST.get('username')
         email = request.POST.get('email')
-        print(email)
-        try:
-            validate_email(email)
-            if  email is not None:
-                letter = models.Newletter(
-                    email = email,
-                )
-                letter.save()
-                messages.success(request,"vos informations ont été enregistré")
-            else:
-                messages.error(request,"email incorect")
-                
-        except Exception as e:
-            print(e)
-            messages.error(request, "l'enregistrement à echoué")
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+        password = request.POST.get('password')
+        confirm = request.POST.get('confirm')
+        print(username,email,password,confirm)
+        if password != confirm:
+            success = True
+            message = "mot de passe incorrect"
+            print("mot de passe incorrect")
+        else:
+            message = "correct"
+            print("success")
+            try:
+                print("1")
+                validate_email(email)
+                isemail = True
+                if isemail and not email.isspace() and username is not None and password is not None and confirm is not None:
+                    try:
+                        print("2")
+                        try:
+                            exist_user = User.objects.get(username=username)
+                        except :
+                            exist_user = User.objects.get(email=email)
+
+                        message = "un utilisateur avec le même username est déjà connecté"
+                        success = True 
+                    except Exception as e :
+                        print("3", e)
+                        user = User(
+                            username=username,
+                            email=email,
+                            password=password,
+                        )
+                        user.save() 
+                        user.password = password
+                        user.set_password(user.password)
+                        user.save()
+
+                        try:
+                            us = authenticate(username=username, password=password)
+                            if us.is_active:
+                                login(request,us)
+                                return redirect('login')
+                        except Exception as e:
+                            print("4", e)
+            except Exception as e:
+                success = True 
+                print("5", e)
+                message = "l'inscription a échoué"
+                print("inscription echoué")
+    datas = {
+        "success":success,
+        "message":message,
+        }
+
+    return render(request, 'pages/register.html', datas)
+
+
+
+def search(request):
+    if request.method=='POST' and len(request.POST.get('searching').strip()) > 0:
+
+        result = request.POST.get('searching')
+        siteinfo = models.Siteinfo.objects.filter(status=True).latest('-date_update')
+        reseau = models.Reseau.objects.filter(status=True)
+
+        recettes = blog_models.Recette.objects.filter(status=True)
+        recettes = recettes.filter(Q(nom__icontains=result) | Q(description__icontains=result))
+
+        articles = organiapp_models.Article.objects.filter(status=True)
+        # articles = articles.filter(nom__icontains=result)
+        articles = articles.filter(Q(nom__icontains=result) | Q(description__icontains=result))
+
+
+        datas={
+            'siteinfo':siteinfo,
+            'reseau':reseau,
+            'result':result,
+            'articles':articles,
+            'longeur': len(articles),
+            'recettes':recettes,
+            'height':len(recettes),
+
+        }
+
+        return render(request, 'pages/search.html', datas)
+    else:
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    
 
 def index(request):
     article = organiapp_models.Article.objects.filter(status=True)
@@ -83,3 +178,24 @@ def contact(request):
         'reseau':reseau,
     }
     return render(request, 'pages/contact.html', datas)
+
+
+def newletter(request):
+    if request.method=='POST':
+        email = request.POST.get('email')
+        print(email)
+        try:
+            validate_email(email)
+            if  email is not None:
+                letter = models.Newletter(
+                    email = email,
+                )
+                letter.save()
+                messages.success(request,"vos informations ont été enregistré")
+            else:
+                messages.error(request,"email incorect")
+                
+        except Exception as e:
+            print(e)
+            messages.error(request, "l'enregistrement à echoué")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
