@@ -53,9 +53,18 @@
                     <li><a href="#">English</a></li>
                 </ul>
             </div>
-            <div class="header__top__right__auth">
-                <a href="{% url 'register' %}"><i class="fa fa-user"></i> Login</a>
-            </div>
+            
+            {% if user.is_authenticated %}
+                <div class="header__top__right__auth">
+                    <a href="{% url 'logout' %}"></i>logout</a>
+                    <a href="#"><i class="fa fa-user"></i>{{user.username}}</a>
+                </div>
+            {% else %}
+                <div class="header__top__right__auth">
+                    <a href="{% url 'register' %}"><i class="fa fa-user"></i> Login</a>
+                </div>
+            {% endif %}
+                
         </div>
         <nav class="humberger__menu__nav mobile-menu">
             <ul>

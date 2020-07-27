@@ -34,11 +34,11 @@
                 <div class="card-heading"></div>
                 <div class="card-body">
                     <h2 class="title">Registration</h2>
-                    <form action="" method="POST">
+                    <form action="{% url 'register' %}" method="POST">
                         {% csrf_token %}
                     
                         {% if success %}
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger" style="color: tomato;">
                         {{message}}
                         </div>
                         {% endif %}

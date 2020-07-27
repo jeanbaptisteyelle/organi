@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render,redirect
 from . import models
 from organiapp import models as organiapp_models
 from blog import models as blog_models
@@ -10,21 +10,23 @@ from django.core.validators import validate_email
 from django.contrib.auth.models import User
 from django.contrib import messages
 # Create your views here.
-def login(request):
+def login_log(request):
+    success = False
     message=""
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username,password=password)
-        if user is not None and user.is_active:
+        if user:
             login(request,user)
-
             return redirect('index')
         else:
             print("login échoué")
-            message = "Merci de vérifiez vos informations"
+            success = True
+            message = "Connexion echoué, merci de vérifiez vos informations"
     datas = {
-
+        "success":success,
+        "message":message,
     }
     return render(request, 'pages/login.html', datas)
 
@@ -57,7 +59,7 @@ def register(request):
                         except :
                             exist_user = User.objects.get(email=email)
 
-                        message = "un utilisateur avec le même username est déjà connecté"
+                        message = "un utilisateur avec le même username ou email est déjà connecté"
                         success = True 
                     except Exception as e :
                         print("3", e)
@@ -78,10 +80,12 @@ def register(request):
                                 return redirect('login')
                         except Exception as e:
                             print("4", e)
+
+
             except Exception as e:
                 success = True 
                 print("5", e)
-                message = "l'inscription a échoué"
+                message = "l'inscription a échoué, veuillez remplir le formulaire correctement"
                 print("inscription echoué")
     datas = {
         "success":success,
@@ -90,7 +94,9 @@ def register(request):
 
     return render(request, 'pages/register.html', datas)
 
-
+def deconnexion(request):
+    logout(request)
+    return redirect('login')
 
 def search(request):
     if request.method=='POST' and len(request.POST.get('searching').strip()) > 0:
