@@ -131,9 +131,16 @@
                                     <li><a href="#">English</a></li>
                                 </ul>
                             </div>
+                            {% if user.is_authenticated %}
+                                <div class="header__top__right__auth">
+                                    <a href="#"><i class="fa fa-user"></i>{{user.username}}</a>
+                                    <a href="{% url 'logout' %}"></i>logout</a>
+                                </div>
+                            {% else %}
                             <div class="header__top__right__auth">
                                 <a href="{% url 'login' %}"><i class="fa fa-user"></i> Login</a>
                             </div>
+                        {% endif %}
                         </div>
                     </div>
                 </div>

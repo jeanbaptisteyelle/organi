@@ -23,7 +23,7 @@ def login_log(request):
         else:
             print("login échoué")
             success = True
-            message = "Connexion echoué, merci de vérifiez vos informations"
+            message = "Connexion echoué, merci de vérifier vos informations"
     datas = {
         "success":success,
         "message":message,

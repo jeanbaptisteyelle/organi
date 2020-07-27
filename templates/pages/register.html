@@ -34,6 +34,8 @@
                 <div class="card-heading"></div>
                 <div class="card-body">
                     <h2 class="title">Registration</h2>
+                    <a href="{% url 'index' %}"  style="color: rgb(238, 88, 200);"><span style="position: absolute;">Retourner à la page d'acceuil</span></a>
+                    <br>
                     <form action="{% url 'register' %}" method="POST">
                         {% csrf_token %}
                     
